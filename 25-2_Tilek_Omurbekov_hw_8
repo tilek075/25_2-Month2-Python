@@ -1,0 +1,46 @@
+import sqlite3
+
+
+def create_connection(db_file):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+    except sqlite3.Error as e:
+        print(e)
+    return conn
+
+
+def create_table(conn, sql):
+    try:
+        cursor = conn.cursor()
+        cursor.execute(sql)
+    except sqlite3.Error as e:
+        print(e)
+
+
+database = 'hw.db'
+sql_create_products_table = '''
+CREATE TABLE product(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+products_title VARCHAR(200) NOT NULL, 
+price DOUBLE(10,2) NOT NULL DEFAULT 0.0,
+quantity INTEGER(5) NOT NULL DEFAULT 0
+)
+'''
+
+
+def create_product(conn, product):
+    try:
+        sql = '''INSERT INTO products (products_title, price, quantity) 
+        VALUES (?, ?, ?)'''
+        cursor = conn.cursor()
+        cursor.execute(sql, product)
+        conn.commit()
+    except sqlite3.Error as e:
+        print(e)
+
+
+connection = create_connection(database)
+if connection is not None:
+    # create_table(connection, sql_create_products_table)
+    create_product(connection, ('Яблоко', 100.10, 1500))
