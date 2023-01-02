@@ -97,7 +97,7 @@ def select_product_by_price_and_quantity(conn, price_limit, quantity_limit):
 def select_search_product(conn, search_word):
     try:
         sql = f'''
-        SELECT * FROM product WHERE products_title LIKE "%{str(search_word)}%"
+        SELECT * FROM product WHERE products_title LIKE "%{search_word.title()}%"
         '''
         cursor = conn.cursor()
         cursor.execute(sql)
@@ -106,6 +106,8 @@ def select_search_product(conn, search_word):
             print(row)
     except sqlite3.Error as e:
         print(e)
+
+
 
 
 connection = create_connection(database)
