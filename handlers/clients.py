@@ -2,6 +2,7 @@ from aiogram import types, Dispatcher
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from config import dp, bot, ADMINS
 from database.bot_db import sql_command_random, sql_command_delete
+from parser.sputnik_kg import parser
 
 
 @dp.message_handler(commands=['start', 'help'])
@@ -57,9 +58,18 @@ async def complete_delete(call: types.CallbackQuery):
     await call.answer(text="Deleted!", show_alert=True)
 
 
+async def get_news(message: types.Message):
+    news = parser()
+    for i in news:
+        await message.answer(
+            f"{i['link']}"
+        )
+
+
 def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(start_handler, commands=['start', 'help'])
     dp.register_message_handler(quiz_1, commands=['quiz'])
     dp.register_message_handler(send_mem, commands=['mem'])
     dp.register_message_handler(get_random_user, commands=['get'])
     dp.register_callback_query_handler(complete_delete, lambda call: call.data and call.data.startswith("delete "))
+    dp.register_message_handler(get_news, commands=['news'])
